@@ -11,11 +11,12 @@ server <- function(input, output, session){
   output$plot <- renderPlot({
     dta <- subData()
     p <-ggplot(data = dta) +
-      stat_smooth(aes(x = variable, y = value, fill = LA), se = FALSE) +
-      guides(fill = FALSE) +
+      geom_line(aes(x = variable, y = value, fill = LA, colour = LA), size = 1.5) +
+      guides(fill = FALSE, colour = FALSE) +
       theme_bw() +
       xlab("Year") + ylab("Population") +
-     geom_label_repel(data = dta, aes(x = variable, y = value, label = LA))
+     geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
+            aes(x = variable, y = value, label = paste(LA, value)), force = 3)
     p
   })
   
