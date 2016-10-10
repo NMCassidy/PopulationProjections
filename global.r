@@ -2,6 +2,7 @@
 library(shiny)
 library(ggplot2)
 library(ggrepel)
+#library(quantmod)  #For year on year change
 projDta <- readRDS("popnDta.rds")
 projDta$variable <- as.numeric(as.character(projDta$variable))
 #Add "Over" before age cohorts

@@ -18,10 +18,12 @@ ui <- fluidPage(
                          )),
       sliderInput("yrs", "Select Time Series", min = min(projDta$variable), 
                   max = max(projDta$variable),step = 1, value = c(2012, 2037),
-                  sep = "")
+                  sep = ""),
+      radioButtons("DispType", "Select Figure to Display", c("Absolute Change", "Percentage Change"),
+                   selected = NULL, inline = TRUE)
     ),
     mainPanel(
-      plotOutput("plot", height = "800px")
+     plotOutput("plot", height = "800px")
     )
   )
 )
