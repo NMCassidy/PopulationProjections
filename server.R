@@ -11,7 +11,7 @@ server <- function(input, output, session){
   })
   someotherData <- reactive({
     dat <- subData()
-    percChngTot <- round(ave(dat$value, as.factor(dat$LA), FUN = function(x) {x/x[1] * 100}), 1)
+    percChngTot <- round(ave(dat$value, as.factor(dat$LA), FUN = function(x) {(x/x[1] * 100)-100}), 1)
     dat <- cbind(dat, percChngTot)
   })
   
@@ -22,18 +22,22 @@ server <- function(input, output, session){
       geom_line(aes(x = variable, y = value, fill = LA, colour = LA), size = 1.5) +
       guides(fill = FALSE, colour = FALSE) +
       theme_bw() +
+      scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),5)) +
       xlab("Year") + ylab("Population") +
      geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
-            aes(x = variable, y = value, label = paste(LA, value)), force = 6)
+            aes(x = variable, y = value, label = paste(LA, value)), 
+            nudge_x = -(diff(input$yrs)/6))
     p} else{
       dta <- someotherData()
       p <-ggplot(data = dta) +
         geom_line(aes(x = variable, y = percChngTot, fill = LA, colour = LA), size = 1.5) +
         guides(fill = FALSE, colour = FALSE) +
         theme_bw() +
-        xlab("Year") + ylab("Population") +
+        scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),5)) +
+        xlab("Year") + ylab("Percentage Increase") +
         geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
-                         aes(x = variable, y = percChngTot, label = paste(LA, percChngTot)), force = 14)
+                      aes(x = variable, y = percChngTot, label = paste(LA, percChngTot)), 
+                          nudge_x = -(diff(input$yrs)/6))
       p
     }
   })
