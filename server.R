@@ -15,7 +15,7 @@ server <- function(input, output, session){
     dat <- cbind(dat, PercentageChange)
   })
   
-  output$plot <- renderPlot({
+  linegraph <- function(){
     ifelse(input$AgeGroup == "Dependency Ratio", lab <- "Dependency Ratio (Population 0-15 + Over 65/ Population 16-64)", lab <-"Population")
     if(input$DispType == "Absolute Change"){
     dta <- subData()
@@ -29,7 +29,7 @@ server <- function(input, output, session){
             aes(x = variable, y = value, label = paste(LA, value)), 
             nudge_x = -(diff(input$yrs)/6)) +
     ylab(print(lab))
-    p} else{
+    return(p)} else{
       dta <- someotherData()
       p <-ggplot(data = dta) +
         geom_line(aes(x = variable, y = PercentageChange, fill = LA, colour = LA), size = 1.5) +
@@ -41,8 +41,12 @@ server <- function(input, output, session){
                       aes(x = variable, y = PercentageChange, label = paste(LA,rep(": ", length(variable)),
                                             PercentageChange, rep("%", length(variable)), sep = "")), 
                           nudge_x = -(diff(input$yrs)/6))
-      p
+      return(p)
     }
+  }
+
+  output$plot <- renderPlot({
+    linegraph()
   })
   
   observeEvent(eventExpr = input$selAll,
@@ -72,7 +76,7 @@ server <- function(input, output, session){
   })
   
   output$Data85 <- DT::renderDataTable({
-    data <- subset(projDta, Age == "Over 85" & variable %in% c(2012,2017,2027,2037) , select = c(variable, value, LA))
+    data <- projDta[projDta$Age == "Over 85" & projDta$variable %in% c(2012,2017,2027,2037),2:4]
     data <- dcast(data, LA ~ variable)
     data$`PercentageChange` <- round(data$`2037`/data$`2012`*100,2)
     data <- datatable(data, extensions = "Scroller", rownames = FALSE,
@@ -80,7 +84,7 @@ server <- function(input, output, session){
                       colnames = c("Local Authority" = 1, "Percentage Change" = 6))
   })
   output$depRatioDat <- DT::renderDataTable({
-    data2 <- subset(projDta, Age == "Dependency Ratio" & variable %in% c(2012,2017,2027,2037) , select = c(variable, value, LA))
+    data2 <- projDta[projDta$Age == "Dependency Ratio" & projDta$variable %in% c(2012,2017,2027,2037),2:4]
     data2 <- dcast(data2, LA ~ variable)
     data2 <- datatable(data2, extensions = "Scroller", rownames = FALSE,
                       options = list(pageLength = 32, dom = "t", scrollY = 700),
@@ -107,5 +111,11 @@ server <- function(input, output, session){
       write.csv(data4dl(), con, row.names = FALSE)
     }
   )
+   output$svPlt <- downloadHandler(
+     filename = paste("Pop_Projection_Plot", ".png", sep = ""),
+     content = function(con){
+       ggsave(con,plot = linegraph(),device = "png", width = 8, height = 5 )
+     }
+   )
   
       } 

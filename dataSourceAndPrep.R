@@ -16,8 +16,8 @@ for(i in 4:35){
   dta[93,] <- c(65, apply(dta[67:92,2:27], MARGIN = 2, sum))
   dta[94,] <- c(75, apply(dta[77:92, 2:27], MARGIN = 2, sum))
   dta[95,] <- c(85, apply(dta[87:92, 2:27], MARGIN =2, sum))
-  dta[96,] <- c(999, apply(dta[c(2:17, 68:92), 2:27], MARGIN = 2, sum))
-  dta[97,] <- c(99, apply(dta[18:67, 2:27], MARGIN = 2, sum))
+  dta[96,] <- c(999, apply(dta[c(2:17, 67:92), 2:27], MARGIN = 2, sum))
+  dta[97,] <- c(99, apply(dta[18:66, 2:27], MARGIN = 2, sum))
   dta[98,] <- c(00, dta[96, 2:27]/dta[97, 2:27]*100)
   dta[98,1] <- "Dependency Ratio"
   dta <- dta[c(1,93:95,98),] 

@@ -3,17 +3,19 @@ ui <- fluidPage(
   tags$head(tags$style(
     "#chkbx {margin-top:10px; column-count:2; -webkit-column-count:2; -moz-column-count:2;
     text-align:left; vertical-align:text-top}
-    .buttons {text-align:left; display:inline}
-    .divider{width: 30px; height: auto; display:inline}
-    #lazy {font-style: italic; margin-top:15px; margin-bottom:0px}"
+    .buttons {text-align:left; display:inline; padding-right:20px}
+    #lazy {font-style: italic; margin-top:7px; margin-bottom:0px}
+    #downloadbut {margin-bottom:10px; display:inline}
+    .SvButton {margin-top:7px}",
+    HTML("h5 {font-weight:bold}")
   )),
   
   sidebarLayout(
     sidebarPanel(
       selectInput("AgeGroup", "Select an Age Group to Forecast", unique(projDta$Age)),
-      h4("Select Local Authority"),
+      h5("Select Local Authority"),
       div(class = "buttons", actionButton("selAll", "Select All"),
-          div(class = "divider"), actionButton("SelNon", "Select None")),
+         actionButton("SelNon", "Select None")),
       div(id = "chkbx",checkboxGroupInput("LocalAuth", label = NA,
                             choices = unique(projDta$LA), selected = NA, inline = FALSE
                          )),
@@ -22,8 +24,9 @@ ui <- fluidPage(
                   sep = ""),
       radioButtons("DispType", "Select Figure to Display", c("Absolute Change", "Percentage Change"),
                    selected = NULL, inline = TRUE),
-      downloadButton("dldata", "Download Selected"),
-      downloadButton("dlAll", "Download All Data"),
+      div(id = "downloadbut", downloadButton("dldata", "Download Selected Data"),
+      downloadButton("svPlt", "Download Plot")),
+      div(class = "SvButton", downloadButton("dlAll", "Download All Data")),
       div(id = "lazy", p("Data Source: NRS"))
     ),
     mainPanel(tabsetPanel(
