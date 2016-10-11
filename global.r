@@ -3,6 +3,8 @@ library(shiny)
 library(ggplot2)
 library(ggrepel)
 library(dplyr)
+library(DT)
+library(reshape2)
 #library(quantmod)  #For year on year change
 projDta <- readRDS("popnDta.rds")
 projDta$variable <- as.numeric(as.character(projDta$variable))

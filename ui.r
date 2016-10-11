@@ -26,8 +26,13 @@ ui <- fluidPage(
       downloadButton("dlAll", "Download All Data"),
       div(id = "lazy", p("Data Source: NRS"))
     ),
-    mainPanel(
+    mainPanel(tabsetPanel(
+      tabPanel("Plot",
      plotOutput("plot", height = "800px")
+      ),
+     tabPanel("Over 85 Population", DT::dataTableOutput("Data85")),
+     tabPanel("Dependency Ratio", DT::dataTableOutput("depRatioDat")),
+     tabPanel("Data Explorer", DT::dataTableOutput("dataexp"))
     )
-  )
+  ))
 )

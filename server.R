@@ -60,6 +60,33 @@ server <- function(input, output, session){
                                           selected = NA)
                }
                )
+  
+  output$dataexp <- DT::renderDataTable({
+    ifelse(input$AgeGroup == "Dependency Ratio", lab2 <- "Dependency Ratio", lab2 <- "Population")
+    dataset <- someotherData()
+    dataset <- dataset[c(4,1,2,3,5)]
+    colnames(dataset)[4] <- lab2
+    tbl <-datatable(dataset, extensions = "Scroller", rownames = FALSE, 
+                options = list(pageLength = 4160, scrollY = 700, dom = "t"),
+                colnames = c("Local Authority" = 1, "Year" = 3))
+  })
+  
+  output$Data85 <- DT::renderDataTable({
+    data <- subset(projDta, Age == "Over 85" & variable %in% c(2012,2017,2027,2037) , select = c(variable, value, LA))
+    data <- dcast(data, LA ~ variable)
+    data$`PercentageChange` <- round(data$`2037`/data$`2012`*100,2)
+    data <- datatable(data, extensions = "Scroller", rownames = FALSE,
+                      options = list(pageLength = 32, dom = "t", scrollY = 700),
+                      colnames = c("Local Authority" = 1, "Percentage Change" = 6))
+  })
+  output$depRatioDat <- DT::renderDataTable({
+    data2 <- subset(projDta, Age == "Dependency Ratio" & variable %in% c(2012,2017,2027,2037) , select = c(variable, value, LA))
+    data2 <- dcast(data2, LA ~ variable)
+    data2 <- datatable(data2, extensions = "Scroller", rownames = FALSE,
+                      options = list(pageLength = 32, dom = "t", scrollY = 700),
+                      colnames = c("Local Authority" = 1))
+  })
+  
   output$dlAll <- downloadHandler(
     filename = paste("NRS_PopulationProjections", ".csv", sep = ""),
     content = function(con) {
