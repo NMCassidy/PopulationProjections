@@ -20,7 +20,8 @@ for(i in 4:35){
   dta[97,] <- c(99, apply(dta[18:66, 2:27], MARGIN = 2, sum))
   dta[98,] <- c(00, dta[96, 2:27]/dta[97, 2:27]*100)
   dta[98,1] <- "Dependency Ratio"
-  dta <- dta[c(1,93:95,98),] 
+  dta[99,] <- c(15, apply(dta[2:17, 2:27], MARGIN = 2, sum))
+  dta <- dta[c(1,99,93:95,98),] 
   cnc <- colnames(dta)[1]
   colnames(dta)[1] <- "Age"
   dta <- melt(dta)
