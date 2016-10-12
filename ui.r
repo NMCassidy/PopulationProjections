@@ -1,7 +1,8 @@
-ui <- fluidPage(
-  titlePanel("Population Projections"),
+ui <- navbarPage(
+  title = "Population Projections",
+ tabPanel("Local Authority Projections",
   tags$head(tags$style(
-    "#LocalAuth {margin-top:10px; column-count:2; -webkit-column-count:2; -moz-column-count:2;
+    ".chckBx {margin-top:10px; column-count:2; -webkit-column-count:2; -moz-column-count:2;
     text-align:left; vertical-align:middle; position:relative; display:block; margin-bottom:0px;
     font-size:1.5vh}",
     ".buttons {text-align:left; display:inline; padding-right:20px;}",
@@ -21,8 +22,8 @@ ui <- fluidPage(
       h5("Select Local Authority"),
       div(class = "buttons", actionButton("selAll", "Select All"),
          actionButton("SelNon", "Clear All")),
-      checkboxGroupInput("LocalAuth", label = NA,
-                            choices = unique(projDta$LA), selected = NA, inline = FALSE),
+      div(class = "chckBx",checkboxGroupInput("LocalAuth", label = NA,
+                            choices = unique(projDta$LA), selected = NA, inline = FALSE)),
       sliderInput("yrs", "Select Time Series", min = min(projDta$variable), 
                   max = max(projDta$variable),step = 1, value = c(2012, 2037),
                   sep = ""),
@@ -45,4 +46,25 @@ ui <- fluidPage(
      tabPanel("Data Explorer", DT::dataTableOutput("dataexp"))
     )
   ))
+ ),
+ 
+##Second Tab dealing with aggregated projections
+ tabPanel("Regional Aggregation",
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("AgeGroupAgg", "Select an Age Group to Forecast", unique(projDta$Age)),
+        h5("Select Local Authorities to Group"),
+        div(class = "buttons", actionButton("selAllAgg", "Select All"),
+            actionButton("SelNonAgg", "Clear All")),
+        div(class = "chckBx",checkboxGroupInput("LocalAuthAgg", label = NA,
+                           choices = unique(projDta$LA), selected = NA, inline = FALSE)),
+        sliderInput("yrsAgg", "Select Time Series", min = min(projDta$variable), 
+                    max = max(projDta$variable),step = 1, value = c(2012, 2037),
+                    sep = "")
+      ),
+      mainPanel(
+        plotOutput("AggPlot")
+      )
+    )
+  )
 )

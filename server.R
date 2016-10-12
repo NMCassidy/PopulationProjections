@@ -14,6 +14,12 @@ server <- function(input, output, session){
     PercentageChange <- round(ave(dat$value, as.factor(dat$LA), FUN = function(x) {(x/x[1] * 100)-100}), 1)
     dat <- cbind(dat, PercentageChange)
   })
+   aggData <- reactive({
+    dtaAgg <- projDta[projDta$LA %in% input$LocalAuthAgg,]
+    dtaAgg <- dtaAgg[dtaAgg$Age == input$AgeGroupAgg,]
+    dtaAgg <- dtaAgg[dtaAgg$variable %in% seq(from = min(input$yrsAgg), to = max(input$yrsAgg), by = 1),]
+    dtaAgg <- ave(dtaAgg$value,as.factor(dtaAgg$variable), FUN = sum)
+    })
   
   linegraph <- function(){
     ifelse(input$AgeGroup == "Dependency Ratio", lab <- "Dependency Ratio (Population 0-15 + Over 65/ Population 16-64)", lab <-"Population")
@@ -56,6 +62,26 @@ server <- function(input, output, session){
     } else{linegraph()}
   })
   
+  output$AggPlot <- renderPlot({
+    dta <- aggData()
+    p <-ggplot(data = dta) +
+      geom_line(aes(x = variable, y = value, fill = LA, colour = LA), size = 1.5) +
+      guides(fill = FALSE, colour = FALSE) +
+      theme_bw() +
+      scale_y_continuous(limits = c(min(dta$value)-min(dta$value)/15, max(dta$value)+max(dta$value)/15)) +
+      scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),5)) +
+      xlab("Year") + 
+      geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
+                       aes(x = variable, y = value, label = paste(LA, value)), 
+                       nudge_x = -(diff(input$yrs)/6)) +
+      geom_label_repel(data = dta[dta$variable == min(input$yrs),], 
+                       aes(x = variable, y = value, label = paste(LA, value)), 
+                       nudge_x = (diff(input$yrs)/6)) +
+      ylab(print(lab))
+    return(p)
+    
+  })
+  
   observeEvent(eventExpr = input$selAll,
   handlerExpr = {
     updateCheckboxGroupInput(session = session,
@@ -71,6 +97,21 @@ server <- function(input, output, session){
                                           selected = NA)
                }
                )
+  observeEvent(eventExpr = input$selAllAgg,
+               handlerExpr = {
+                 updateCheckboxGroupInput(session = session,
+                                          inputId = "LocalAuthAgg",
+                                          selected = unique(projDta$LA))
+               } 
+  )
+  
+  observeEvent(eventExpr = input$SelNonAgg,
+               handlerExpr = {
+                 updateCheckboxGroupInput(session=session,
+                                          inputId = "LocalAuthAgg",
+                                          selected = NA)
+               }
+  )
   
   output$dataexp <- DT::renderDataTable({
     ifelse(input$AgeGroup == "Dependency Ratio", lab2 <- "Dependency Ratio", lab2 <- "Population")
@@ -83,7 +124,7 @@ server <- function(input, output, session){
   })
   
   output$Data85 <- DT::renderDataTable({
-    data <- projDta[projDta$Age == "Over 85" & projDta$variable %in% c(seq(from =2012, 2033,3),2037),2:4]
+    data <- projDta[projDta$Age == "Aged 85 and Over" & projDta$variable %in% c(seq(from =2012, 2033,3),2037),2:4]
     data <- dcast(data, LA ~ variable)
     data$`PercentageChange` <- round(data$`2037`/data$`2012`*100,2)
     data <- datatable(data, extensions = "Scroller", rownames = FALSE,
