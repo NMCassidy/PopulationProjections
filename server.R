@@ -69,7 +69,8 @@ server <- function(input, output, session){
     } else{linegraph()}
   })
   
-  output$AggPlot <- renderPlot({
+  addGraph <- function(){
+    ifelse(input$AgeGroup == "Dependency Ratio", lab <- "Dependency Ratio (Population 0-15 + Over 65/ Population 16-64)", lab <-"Population")
     dta <- aggData()
     p <-ggplot(data = dta) +
       geom_line(aes(x = variable, y = value), size = 1.5, colour = "red") +
@@ -80,13 +81,18 @@ server <- function(input, output, session){
       xlab("Year") + 
       geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
                        aes(x = variable, y = value, label = value), 
-                       nudge_x = -(diff(input$yrs)/6)) +
+                       nudge_x = -(diff(input$yrsAgg)/6)) +
       geom_label_repel(data = dta[dta$variable == min(input$yrs),], 
                        aes(x = variable, y = value, label = value), 
-                       nudge_x = (diff(input$yrs)/6)) #+
-    #  ylab(print(lab))
+                       nudge_x = (diff(input$yrsAgg)/6)) +
+      ylab(print(lab))
     return(p)
-    
+  }
+  
+  output$AggPlot <- renderPlot({
+    if(nrow(aggData()) == 0){
+      NA
+    } else{addGraph()}
   })
   
   observeEvent(eventExpr = input$selAll,

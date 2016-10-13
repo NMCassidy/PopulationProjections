@@ -10,7 +10,8 @@ ui <- navbarPage(
     ".SvButton {margin-top:5px;}",
     ".ReferencePg p{font-style: italic; margin-top:7px; margin-bottom:0px; display:inline-block;}",
     ".ReferencePg a{font-style: italic; margin-top:7px; margin-bottom:0px; display:inline-block;}",
-    "#plot {height: 90vh}",
+    "#plot {height: 80vh !important;}",
+    "#aggregPlot {height: 80vh !important;}",
     HTML(
    " h5 {font-weight:bold;}
    div.checkbox {margin-top: 0px;}")
@@ -39,7 +40,7 @@ ui <- navbarPage(
     ),
     mainPanel(tabsetPanel(
       tabPanel("Plot",
-     plotOutput("plot", height = "800px")
+     plotOutput("plot")
       ),
      tabPanel("Over 85 Population", DT::dataTableOutput("Data85")),
      tabPanel("Dependency Ratio", DT::dataTableOutput("depRatioDat")),
@@ -63,7 +64,7 @@ ui <- navbarPage(
                     sep = "")
       ),
       mainPanel(
-        plotOutput("AggPlot")
+        tags$div(id = "aggregPlot",plotOutput("AggPlot"))
       )
     )
   )
