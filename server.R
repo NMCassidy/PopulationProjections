@@ -16,9 +16,16 @@ server <- function(input, output, session){
   })
    aggData <- reactive({
     dtaAgg <- projDta[projDta$LA %in% input$LocalAuthAgg,]
-    dtaAgg <- dtaAgg[dtaAgg$Age == input$AgeGroupAgg,]
     dtaAgg <- dtaAgg[dtaAgg$variable %in% seq(from = min(input$yrsAgg), to = max(input$yrsAgg), by = 1),]
-    dtaAgg <- ave(dtaAgg$value,as.factor(dtaAgg$variable), FUN = sum)
+    if(input$AgeGroupAgg == "Dependency Ratio"){
+      dtaAgg <- aggregate(value~Age+variable, FUN = sum, data = dtaAgg)
+      dr <- tapply(dtaAgg$value, as.factor(dtaAgg$variable), function(x) {(x[1]+x[2])/(x[5]-(x[1]+x[2])) *100})
+      dtaAgg <- data.frame("variable" = as.numeric(names(dr)), "value" = round(dr,2))
+      } 
+    else{
+      dtaAgg <- dtaAgg[dtaAgg$Age == input$AgeGroupAgg,]
+      dtaAgg <- tapply(dtaAgg$value,as.factor(dtaAgg$variable), FUN = sum)
+      dtaAgg <- data.frame("variable" = as.numeric(names(dtaAgg)), "value" = dtaAgg)}
     })
   
   linegraph <- function(){
@@ -29,7 +36,7 @@ server <- function(input, output, session){
       geom_line(aes(x = variable, y = value, fill = LA, colour = LA), size = 1.5) +
       guides(fill = FALSE, colour = FALSE) +
       theme_bw() +
-      scale_y_continuous(limits = c(min(dta$value)-min(dta$value)/15, max(dta$value)+max(dta$value)/15)) +
+      scale_y_continuous(limits = c(min(dta$value)-min(dta$value)/5, max(dta$value)+max(dta$value)/5)) +
       scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),5)) +
       xlab("Year") + 
      geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
@@ -46,7 +53,7 @@ server <- function(input, output, session){
         guides(fill = FALSE, colour = FALSE) +
         theme_bw() +
         scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),5)) +
-        scale_y_continuous(limits = c(min(dta$PercentageChange)-5, max(dta$PercentageChange)+max(dta$PercentageChange)/2.5)) +
+        scale_y_continuous(limits = c(min(dta$PercentageChange)-5, max(dta$PercentageChange)+max(dta$PercentageChange)/4)) +
         xlab("Year") + ylab("Percentage Change") +
         geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
                       aes(x = variable, y = PercentageChange, label = paste(LA,rep(": ", length(variable)),
@@ -65,19 +72,19 @@ server <- function(input, output, session){
   output$AggPlot <- renderPlot({
     dta <- aggData()
     p <-ggplot(data = dta) +
-      geom_line(aes(x = variable, y = value, fill = LA, colour = LA), size = 1.5) +
+      geom_line(aes(x = variable, y = value), size = 1.5, colour = "red") +
       guides(fill = FALSE, colour = FALSE) +
       theme_bw() +
       scale_y_continuous(limits = c(min(dta$value)-min(dta$value)/15, max(dta$value)+max(dta$value)/15)) +
       scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),5)) +
       xlab("Year") + 
       geom_label_repel(data = dta[dta$variable == max(input$yrs),], 
-                       aes(x = variable, y = value, label = paste(LA, value)), 
+                       aes(x = variable, y = value, label = value), 
                        nudge_x = -(diff(input$yrs)/6)) +
       geom_label_repel(data = dta[dta$variable == min(input$yrs),], 
-                       aes(x = variable, y = value, label = paste(LA, value)), 
-                       nudge_x = (diff(input$yrs)/6)) +
-      ylab(print(lab))
+                       aes(x = variable, y = value, label = value), 
+                       nudge_x = (diff(input$yrs)/6)) #+
+    #  ylab(print(lab))
     return(p)
     
   })
