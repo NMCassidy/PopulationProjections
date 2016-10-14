@@ -1,5 +1,5 @@
 ui <- navbarPage(
-  title = "Population Projections",
+  title = "Population Projections", theme = shinytheme("simplex"),
  tabPanel("Local Authority Projections",
   tags$head(tags$style(
     ".chckBx {margin-top:10px; column-count:2; -webkit-column-count:2; -moz-column-count:2;
@@ -13,8 +13,8 @@ ui <- navbarPage(
     "#plot {height: 80vh !important;}",
     "#AggPlot {height: 80vh !important;}",
     HTML(
-   " h5 {font-weight:bold;}
-   div.checkbox {margin-top: 0px;}")
+ #  " h5 {font-weight:bold;}
+   "div.checkbox {margin-top: 0px;}")
   )),
   
   sidebarLayout(
@@ -61,7 +61,9 @@ ui <- navbarPage(
                            choices = unique(projDta$LA), selected = NA, inline = FALSE)),
         sliderInput("yrsAgg", "Select Time Series", min = min(projDta$variable), 
                     max = max(projDta$variable),step = 1, value = c(2012, 2037),
-                    sep = "")
+                    sep = ""),
+        radioButtons("DispTypeAgg","Select Figure to Display", c("Absolute Change", "Percentage Change"),
+                     selected = NULL, inline = TRUE)
       ),
       mainPanel(
         plotOutput("AggPlot")
