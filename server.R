@@ -21,13 +21,14 @@ server <- function(input, output, session){
       dtaAgg <- aggregate(value~Age+variable, FUN = sum, data = dtaAgg)
       dr <- tapply(dtaAgg$value, as.factor(dtaAgg$variable), function(x) {(x[1]+x[2])/(x[5]-(x[1]+x[2])) *100})
       dtaAgg <- data.frame("variable" = as.numeric(names(dr)), "value" = round(dr,2))
-      dtaAgg$PChange <- round(((dtaAgg$value-dtaAgg$value[1])/dtaAgg[1])*100,2)
+     # dtaAgg$PChange <- round(((dtaAgg$value-dtaAgg$value[1])/dtaAgg$value[1])*100,2)
       } 
     else{
       dtaAgg <- dtaAgg[dtaAgg$Age == input$AgeGroupAgg,]
       dtaAgg <- tapply(dtaAgg$value,as.factor(dtaAgg$variable), FUN = sum)
-      dtaAgg <- data.frame("variable" = as.numeric(names(dtaAgg)), "value" = dtaAgg)}
-      dtaAgg$PChange <- round(((dtaAgg$value-dtaAgg$value[1])/dtaAgg[1])*100,2)
+      dtaAgg <- data.frame("variable" = as.numeric(names(dtaAgg)), "value" = dtaAgg)
+      PChange <- round(((dtaAgg$value-dtaAgg$value[1])/dtaAgg$value[1])*100,2)
+      dtaAgg <- cbind(dtaAgg,PChange)}
     })
   
   linegraph <- function(){
