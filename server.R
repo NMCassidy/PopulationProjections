@@ -140,6 +140,10 @@ server <- function(input, output, session){
                                           selected = NA)
                }
   )
+  observeEvent(eventExpr = input$lapPage_link,
+               handlerExpr = {
+                 updateNavbarPage(session, "mainList","Local Authority Projections")
+               })
   
   output$dataexp <- DT::renderDataTable({
     ifelse(input$AgeGroup == "Dependency Ratio", lab2 <- "Dependency Ratio", lab2 <- "Population")
@@ -173,6 +177,14 @@ server <- function(input, output, session){
       write.csv(dlData, con, row.names = FALSE)
     }
   )
+  
+  output$HealthyLE <- DT::renderDataTable({
+    Hldata <- datatable(HLEdta, extensions = "Scroller", rownames = FALSE, 
+                        options = list(pageLength = 32, dom  = "t", scrollY = 700),
+                        colnames = c("Local Authority", "Male Healthy Life Expectancy at Birth, 2009-13", 
+                                     "Female Healthy Life Expectancy at Birth, 2009-13"))
+  })
+  
   data4dl <- reactive({
     dt <- someotherData() 
     dd <- dcast(dt, LA ~ variable + Age)

@@ -1,6 +1,23 @@
-ui <- navbarPage(
+ui <- navbarPage(id = "mainList",
   title = "Population Projections", theme = shinytheme("simplex"),
+  tabPanel("Cover Page",
+           fluidPage(
+             h3("Introduction"),
+             p("Welcome to the"), p("Population Projector", style = "font-style: oblique; diplay:inline-block;"),
+             p("This app uses the small area population projection data from the National Records of Scotland
+               to allow you to easily graph and compare future populations for multiple age groups and the resultant dependency ratio."),
+             h5("A Note on Dependency Ratio"),
+             p("Dependency Ratio is calculated as the ratio of dependents (people 15 and under and pensionable age (65 and over))
+               to working age people (16-64). This tool uses these age groups to project dependency ratio for all years.
+               It is worth noting, however, that the pension age is due to rise to 66 by 2020 and to 67 by 2028. This means that the working age group will be larger than is
+               measured in this tool and so dependency ratios will, in practice, be slightly lower than projected here."),
+            actionLink("lapPage_link","Local Authority Projections"),
+             br(),
+             img(src = "http://www.improvementservice.org.uk/benchmarking/images/islogo.png", align = "bottom-right")
+           )),
+  
  tabPanel("Local Authority Projections",
+          #Some css
   tags$head(tags$style(
     ".chckBx {margin-top:10px; column-count:2; -webkit-column-count:2; -moz-column-count:2;
     text-align:left; vertical-align:middle; position:relative; display:block; margin-bottom:0px;
@@ -44,7 +61,9 @@ ui <- navbarPage(
       ),
      tabPanel("Over 85 Population", DT::dataTableOutput("Data85")),
      tabPanel("Dependency Ratio", DT::dataTableOutput("depRatioDat")),
+     tabPanel("Healthy Life Expectancy", DT::dataTableOutput("HealthyLE")),
      tabPanel("Data Explorer", DT::dataTableOutput("dataexp"))
+     
     )
   ))
  ),
