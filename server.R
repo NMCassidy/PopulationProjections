@@ -181,8 +181,8 @@ server <- function(input, output, session){
   output$HealthyLE <- DT::renderDataTable({
     Hldata <- datatable(HLEdta, extensions = "Scroller", rownames = FALSE, 
                         options = list(pageLength = 32, dom  = "t", scrollY = 700),
-                        colnames = c("Local Authority", "Male Healthy Life Expectancy at Birth, 2009-13", 
-                                     "Female Healthy Life Expectancy at Birth, 2009-13"))
+                        colnames = c("Local Authority", "Male Healthy Life Expectancy at Birth, 2013", 
+                                     "Female Healthy Life Expectancy at Birth, 2013"))
   })
   
   data4dl <- reactive({

@@ -1,10 +1,11 @@
 name: PopulationProjections
+title:
 account: isresearchnc
 server: shinyapps.io
 appId: 130835
-bundleId: 584297
+bundleId: 590559
 url: https://isresearchnc.shinyapps.io/PopulationProjections/
-when: 1476261826.23365
+when: 1476867476.7248
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: dataSourceAndPrep.R|detailed LA 2012-pop proj.xlsx
