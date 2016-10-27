@@ -2,13 +2,13 @@
 library(readxl)
 library(reshape2)
 dtaLA <- data.frame()
-for(i in 4:35){
-  dta <- read_excel("Q:/PopulationProjections/detailed LA 2012-pop proj.xlsx", sheet = i, skip = 1, col_name = FALSE)
+for(i in 6:37){
+ # dta <- read_excel("Q:/PopulationProjections/detailed LA 2012-pop proj.xlsx", sheet = i, skip = 1, col_name = FALSE)
+  dta <- read_excel("Q:/PopulationProjections/pop-proj-scot-areas-14-det-tab-ca-area.xlsx", sheet = i, skip = 1, col_name = FALSE)
   dta[2,1] <- dta[1,1]
-  dta <- dta[c(2, 5:96),c(1:14,17:29)]
-  dta[1,2] <- "2012"
-  dta[1] <- apply(dta[1], MARGIN = 1, function(x) gsub("\\.000000", "", x))
-  dta[2] <- apply(dta[2], MARGIN = 1, function(x) gsub("\\.00", "", x))
+  dta <- dta[c(2, 5:96),1:27]
+  #dta[1] <- apply(dta[1], MARGIN = 1, function(x) gsub("\\.000000", "", x))
+  #dta[2] <- apply(dta[2], MARGIN = 1, function(x) gsub("\\.00", "", x))
   colnames(dta) <- dta[1,]
   dta <- dta[-1,]
   row.names(dta) <- 1:nrow(dta)
