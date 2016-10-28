@@ -20,7 +20,7 @@ server <- function(input, output, session){
     if(input$AgeGroupAgg == "Dependency Ratio"){
       dtaAgg <- aggregate(value~Age+variable, FUN = sum, data = dtaAgg)
       dr <- tapply(dtaAgg$value, as.factor(dtaAgg$variable), function(x) {(x[1]+x[2])/(x[5]-(x[1]+x[2])) *100})
-      dtaAgg <- data.frame("variable" = as.numeric(names(dr)), "value" = round(dr,2))
+      dtaAgg <- data.frame("variable" = as.numeric(names(dr)), "value" = as.numeric(round(dr,2)))
      # dtaAgg$PChange <- round(((dtaAgg$value-dtaAgg$value[1])/dtaAgg$value[1])*100,2)
       } 
     else{
@@ -148,6 +148,10 @@ server <- function(input, output, session){
                handlerExpr = {
                  updateNavbarPage(session, "mainList", "Regional Aggregation")
                })
+  observeEvent(eventExpr = input$mtaPage_link,
+               handlerExpr = {
+                 updateNavbarPage(session, "mainList", "Metadata")
+               })
   
   
   output$dataexp <- DT::renderDataTable({
@@ -192,12 +196,18 @@ server <- function(input, output, session){
   
   output$AggDtaTbl <- DT::renderDataTable({
     aggDta <- aggData()
+    if(input$AgeGroupAgg != "Dependency Ratio"){
     aggDta$YrOn <- round((aggDta$value/lag(aggDta$value, 1)-1)*100, 2)
     p <- datatable(aggDta, extensions = "Scroller", rownames = FALSE,
                    options = list(pageLength = 32, dom = "t", scrollY = 700),
                    colnames = c("Year", "Value", "Total Percentage Change (from Base Year)",
                                 "Year on Year Percentage Change")
-    ) 
+    )}
+    else{
+      p <- datatable(aggDta, extensions = "Scroller", rownames = FALSE,
+                     options = list(pageLength = 32, dom = "t", scrollY = 700),
+                     colnames = c("Year", "Dependency Ratio"))
+    }
   })
   
   data4dl <- reactive({

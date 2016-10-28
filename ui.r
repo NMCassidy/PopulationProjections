@@ -1,8 +1,8 @@
 ui <- navbarPage(id = "mainList",
   title = "Population Projections", theme = shinytheme("simplex"),
   tabPanel("Cover Page",
-           includeHTML("CoverPage.html"),
-             img(src = "http://www.improvementservice.org.uk/benchmarking/images/islogo.png", align = "bottom")
+           img(src = "http://www.improvementservice.org.uk/benchmarking/images/islogo.png", align = "top"),
+           includeHTML("CoverPage.html")
            ),
  tabPanel("Local Authority Projections",
           #Some css
@@ -78,5 +78,7 @@ ui <- navbarPage(id = "mainList",
       )
         )
     )
-  )
+  ),
+  tabPanel("Metadata",
+           includeHTML("metadata.html"))
 )
