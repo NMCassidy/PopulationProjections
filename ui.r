@@ -72,9 +72,11 @@ ui <- navbarPage(id = "mainList",
         radioButtons("DispTypeAgg","Select Figure to Display", c("Absolute Change", "Percentage Change"),
                      selected = NULL, inline = TRUE)
       ),
-      mainPanel(
-        plotOutput("AggPlot")
+      mainPanel(tabsetPanel(
+        tabPanel("Plot",plotOutput("AggPlot")),
+        tabPanel("Aggregated Population Figures", dataTableOutput("AggDtaTbl"))
       )
+        )
     )
   )
 )
