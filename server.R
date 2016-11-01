@@ -169,14 +169,14 @@ server <- function(input, output, session){
     data <- dcast(data, LA ~ variable)
     data$`PercentageChange` <- round(data$`2039`/data$`2014`*100,2)
     data <- datatable(data, extensions = "Scroller", rownames = FALSE,
-                      options = list(pageLength = 32, dom = "t", scrollY = 700, scrollX = TRUE),
+                      options = list(pageLength = 33, dom = "t", scrollY = 700, scrollX = TRUE),
                       colnames = c("Local Authority" = 1, "Percentage Change" = 11))
   })
   output$depRatioDat <- DT::renderDataTable({
     data2 <- projDta[projDta$Age == "Dependency Ratio" & projDta$variable %in% c(seq(from =2014, 2035,3),2039),2:4]
     data2 <- dcast(data2, LA ~ variable)
     data2 <- datatable(data2, extensions = "Scroller", rownames = FALSE,
-                      options = list(pageLength = 32, dom = "t", scrollY = 700, scrollX = TRUE),
+                      options = list(pageLength = 33, dom = "t", scrollY = 700, scrollX = TRUE),
                       colnames = c("Local Authority" = 1))
   })
   
@@ -189,7 +189,7 @@ server <- function(input, output, session){
   
   output$HealthyLE <- DT::renderDataTable({
     Hldata <- datatable(HLEdta, extensions = "Scroller", rownames = FALSE, 
-                        options = list(pageLength = 32, dom  = "t", scrollY = 700),
+                        options = list(pageLength = 33, dom  = "t", scrollY = 700),
                         colnames = c("Local Authority", "Male Healthy Life Expectancy at Birth, 2013", 
                                      "Female Healthy Life Expectancy at Birth, 2013"))
   })
@@ -199,13 +199,13 @@ server <- function(input, output, session){
     if(input$AgeGroupAgg != "Dependency Ratio"){
     aggDta$YrOn <- round((aggDta$value/lag(aggDta$value, 1)-1)*100, 2)
     p <- datatable(aggDta, extensions = "Scroller", rownames = FALSE,
-                   options = list(pageLength = 32, dom = "t", scrollY = 700),
+                   options = list(pageLength = 33, dom = "t", scrollY = 700),
                    colnames = c("Year", "Value", "Total Percentage Change (from Base Year)",
                                 "Year on Year Percentage Change")
     )}
     else{
       p <- datatable(aggDta, extensions = "Scroller", rownames = FALSE,
-                     options = list(pageLength = 32, dom = "t", scrollY = 700),
+                     options = list(pageLength = 33, dom = "t", scrollY = 700),
                      colnames = c("Year", "Dependency Ratio"))
     }
   })
