@@ -3,11 +3,17 @@ server <- function(input, output, session){
   options(scipen = 1000)
   
   subData <- reactive({
+    if(input$adjustedFigures == FALSE){
     dtaLA <- projDta[projDta$LA %in% input$LocalAuth, ]
     dtaLA <- dtaLA[dtaLA$Age == input$AgeGroup,]
     dtaLA <- dtaLA[dtaLA$variable %in% seq(from = min(input$yrs), to = max(input$yrs), by = 1),]
   #Calculates year on year change
   #  dtaLA$percChng <- ave(dtaLA$value, dtaLA$LA, FUN = Delt)
+    }else{
+      dtaLA <- projDtaAdj[projDtaAdj$LA %in% input$LocalAuth, ]
+      dtaLA <- dtaLA[dtaLA$Age == input$AgeGroup,]
+      dtaLA <- dtaLA[dtaLA$variable %in% seq(from = min(input$yrs), to = max(input$yrs), by = 1),]
+    }
   })
   someotherData <- reactive({
     dat <- subData()

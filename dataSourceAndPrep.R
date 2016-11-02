@@ -31,3 +31,20 @@ for(i in 6:37){
 
 #save 
 saveRDS(dtaLA, "Q:/PopulationProjections/popnDta.rds")
+
+#Adjusted figures 75-84 = *2; 85+ = *3
+dtaLAA <- dtaLA
+#adj75 <- tapply(dtaLA$value, list(dtaLA$LAA, dtaLAA$variable), function(x) {x[4]-x[5]}) 
+#adj75 <- adj75*2
+#adj75 <- as.data.frame(adj75)
+dtaLAA[dtaLAA$Age == "All ages", 3] <- dtaLAA[dtaLAA$Age == "All ages",3] - dtaLAA[dtaLAA$Age == "65", 3]
+dtaLAA[dtaLAA$Age == "65", 3] <- dtaLAA[dtaLAA$Age == "65", 3] - dtaLAA[dtaLAA$Age == "75", 3]
+dtaLAA[dtaLAA$Age == "75", 3] <- (dtaLAA[dtaLAA$Age== "75", 3] - dtaLAA[dtaLAA$Age =="85", 3]) *2
+dtaLAA[dtaLAA$Age == "85", 3] <- dtaLAA[dtaLAA$Age == "85", 3] * 3
+dtaLAA[dtaLAA$Age == "75", 3] <- dtaLAA[dtaLAA$Age == "75", 3] + dtaLAA[dtaLAA$Age == "85", 3]
+dtaLAA[dtaLAA$Age == "65", 3] <- dtaLAA[dtaLAA$Age == "65", 3] + dtaLAA[dtaLAA$Age == "75", 3]
+dtaLAA[dtaLAA$Age == "All ages", 3] <- dtaLAA[dtaLAA$Age == "All ages", 3] + dtaLAA[dtaLAA$Age == "65", 3]
+dtaLAA[dtaLAA$Age == "Dependency Ratio", 3] <- (dtaLAA[dtaLAA$Age == "15", 3] + dtaLAA[dtaLAA$Age == "65", 3]) / (dtaLAA[dtaLAA$Age == "All ages", 3] - dtaLAA[dtaLAA$Age == "15",3] - 
+                                               dtaLAA[dtaLAA$Age == "65",3]) *100
+#save
+saveRDS(dtaLAA, "Q:/PopulationProjections/popnDtaAdjusted.rds")
