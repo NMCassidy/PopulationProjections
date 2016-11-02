@@ -171,7 +171,11 @@ server <- function(input, output, session){
   })
   
   output$Data85 <- DT::renderDataTable({
+    if(input$adjustedFigures ==FALSE){
     data <- projDta[projDta$Age == "Aged 85 and Over" & projDta$variable %in% c(seq(from =2014, 2035,3),2039),2:4]
+    }else{
+      data <- projDtaAdj[projDtaAdj$Age == "Aged 85 and Over" & projDtaAdj$variable %in% c(seq(from =2014, 2035,3),2039),2:4]
+    }
     data <- dcast(data, LA ~ variable)
     data$`PercentageChange` <- round(data$`2039`/data$`2014`*100,2)
     data <- datatable(data, extensions = "Scroller", rownames = FALSE,
@@ -179,7 +183,11 @@ server <- function(input, output, session){
                       colnames = c("Local Authority" = 1, "Percentage Change" = 11))
   })
   output$depRatioDat <- DT::renderDataTable({
+    if(input$adjustedFigures == FALSE){
     data2 <- projDta[projDta$Age == "Dependency Ratio" & projDta$variable %in% c(seq(from =2014, 2035,3),2039),2:4]
+    }else{
+      data2 <- projDtaAdj[projDtaAdj$Age == "Dependency Ratio" & projDtaAdj$variable %in% c(seq(from =2014, 2035,3),2039),2:4]
+    }
     data2 <- dcast(data2, LA ~ variable)
     data2 <- datatable(data2, extensions = "Scroller", rownames = FALSE,
                       options = list(pageLength = 33, dom = "t", scrollY = 700, scrollX = TRUE),
