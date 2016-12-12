@@ -42,8 +42,8 @@ server <- function(input, output, session){
     if(input$DispType == "Absolute Change"){
     dta <- subData()
     p <-ggplot(data = dta) +
-      geom_line(aes(x = variable, y = value, fill = LA, colour = LA), size = 1.5) +
-      guides(fill = FALSE, colour = FALSE) +
+      geom_line(aes(x = variable, y = value,  colour = LA), size = 1.5) +
+      guides(colour = FALSE) +
       theme_bw() +
       scale_y_continuous(limits = c(min(dta$value)-min(dta$value)/5, max(dta$value)+max(dta$value)/5)) +
       scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),3)) +
@@ -53,12 +53,12 @@ server <- function(input, output, session){
             nudge_x = -(diff(input$yrs)/6)) +
       geom_label_repel(data = dta[dta$variable == min(input$yrs),], 
                        aes(x = variable, y = value, label = paste(LA, value))) +
-    ylab(print(lab))
+    ylab(lab)
     return(p)} else{
       dta <- someotherData()
       p <-ggplot(data = dta) +
-        geom_line(aes(x = variable, y = PercentageChange, fill = LA, colour = LA), size = 1.5) +
-        guides(fill = FALSE, colour = FALSE) +
+        geom_line(aes(x = variable, y = PercentageChange, colour = LA), size = 1.5) +
+        guides(colour = FALSE) +
         theme_bw() +
         scale_x_continuous(breaks = seq(min(input$yrs), max(input$yrs),3)) +
         scale_y_continuous(limits = c(min(dta$PercentageChange)-5, max(dta$PercentageChange)+max(dta$PercentageChange)/4)) +
@@ -83,7 +83,7 @@ server <- function(input, output, session){
     if(input$DispTypeAgg == "Absolute Change"){
     p <-ggplot(data = dta) +
       geom_line(aes(x = variable, y = value), size = 1.5, colour = "red") +
-      guides(fill = FALSE, colour = FALSE) +
+      guides(colour = FALSE) +
       theme_bw() +
       scale_y_continuous(limits = c(min(dta$value)-min(dta$value)/15, max(dta$value)+max(dta$value)/15)) +
       scale_x_continuous(breaks = seq(min(input$yrsAgg), max(input$yrsAgg),3)) +
@@ -93,11 +93,11 @@ server <- function(input, output, session){
                        nudge_x = -(diff(input$yrsAgg)/6)) +
       geom_label_repel(data = dta[dta$variable == min(input$yrsAgg),], 
                        aes(x = variable, y = value, label = value)) +
-      ylab(print(lab))
+      ylab(lab)
     return(p)} else{
       p <-ggplot(data = dta) +
         geom_line(aes(x = variable, y = PChange), size = 1.5, colour = "red") +
-        guides(fill = FALSE, colour = FALSE) +
+        guides(colour = FALSE) +
         theme_bw() +
         scale_y_continuous(limits = c(min(dta$PChange)-min(dta$PChange)/15, max(dta$PChange)+max(dta$PChange)/15)) +
         scale_x_continuous(breaks = seq(min(input$yrsAgg), max(input$yrsAgg),3)) +
@@ -105,7 +105,7 @@ server <- function(input, output, session){
         geom_label_repel(data = dta[dta$variable == max(input$yrsAgg),], 
                          aes(x = variable, y = PChange, label = PChange), 
                          nudge_x = -(diff(input$yrsAgg)/6)) +
-        ylab(print(lab))
+        ylab(lab)
       return(p)
     }
   }
